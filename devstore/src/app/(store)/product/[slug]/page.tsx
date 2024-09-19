@@ -12,7 +12,7 @@ interface ProductProps {
 async function getProduct(slug: string): Promise<Product> {
   const response = await api(`/products/${slug}`, {
     next: {
-      revalidate: 60 * 60,
+      revalidate: 60 * 60, // 1 hour
     },
   })
 
@@ -25,13 +25,14 @@ export async function generateMetadata({
   params,
 }: ProductProps): Promise<Metadata> {
   const product = await getProduct(params.slug)
+
   return {
     title: product.title,
   }
 }
 
 export async function generateStaticParams() {
-  const response = await api('products/featured')
+  const response = await api('/products/featured')
   const products: Product[] = await response.json()
 
   return products.map((product) => {
